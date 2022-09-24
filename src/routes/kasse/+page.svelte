@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { orders, type TOrder } from "$lib/stores/orders.client";
-	import { wsc } from '$lib/ws-client';
+  import userStore from "$lib/stores/db"
+	import { onMount } from "svelte";
 
 	let order: TOrder | undefined;
+
+onMount(async () => {
+  console.log(await userStore.orders.get());
+  
+})  
 
 	const sendOrderToKitchen = () => {
 		order = {
@@ -19,7 +25,7 @@
 
 <div style="background-image: radial-gradient(hsla(var(--bc)/.2) .5px,hsla(var(--b2)/1) .5px); background-size: 5px 5px;" class="bg-top bg-base-200 border-base-300 rounded-b-box">
 	<div class="flex flex-col">
-		{#each ["Schoko","Banana","Zimt+Zucker","Apfelmus"] as item}
+		{#each ["Schoko","Banana","Apfelmus"] as item}
     <div class="card w-96 bg-base-100 shadow-xl">
 			<figure><img src={`/images/${item}_Crepes.png`} alt={item} /></figure>
 			<div class="card-body">
