@@ -4,7 +4,7 @@ specifiers:
   '@supabase/auth-helpers-sveltekit': ^0.7.1
   '@supabase/supabase-js': ^1.35.7
   '@sveltejs/adapter-vercel': next
-  '@sveltejs/kit': next
+  '@sveltejs/kit': 1.0.0-next.505
   '@typescript-eslint/eslint-plugin': ^5.38.1
   '@typescript-eslint/parser': ^5.38.1
   autoprefixer: ^10.4.12
@@ -31,7 +31,7 @@ dependencies:
 
 devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.77
-  '@sveltejs/kit': 1.0.0-next.504_svelte@3.50.1+vite@3.1.4
+  '@sveltejs/kit': 1.0.0-next.505_svelte@3.50.1+vite@3.1.4
   '@typescript-eslint/eslint-plugin': 5.38.1_c7qepppml3d4ahu5cnfwqe6ltq
   '@typescript-eslint/parser': 5.38.1_ypn2ylkkyfa5i233caldtndbqa
   autoprefixer: 10.4.12_postcss@8.4.16
@@ -259,8 +259,8 @@ packages:
       - supports-color
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.504_svelte@3.50.1+vite@3.1.4:
-    resolution: {integrity: sha512-KrhlSHT3aCVnhRgUoN6aGIjIw3nWEdNwfoZcE1x65F5D7Ju/K9D8dQwyal9v0aBAZyN9nFuXxsYGaMLE9sppfw==}
+  /@sveltejs/kit/1.0.0-next.505_svelte@3.50.1+vite@3.1.4:
+    resolution: {integrity: sha512-vg2WvWiUB7useJZOKbdM8WOXv10WD7SVDER74IXd1t/TWb/uXHzwMQ/ZAsXZFdxQsz1cDGFub3iC76PW+j58Pg==}
     engines: {node: '>=16.14'}
     hasBin: true
     requiresBuild: true

@@ -19,7 +19,7 @@
 	};
 </script>
 
-<div class="mt-8 flex h-full flex-col items-center justify-center">
+<div class="flex h-full flex-col items-center justify-center">
 	{#if !$page.data.session.user}
 		<div class="column is-half is-offset-one-quarter">
 			{#if form?.error}

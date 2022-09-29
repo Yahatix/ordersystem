@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
-import {setupSupabaseHelpers} from "@supabase/auth-helpers-sveltekit"
+import { setupSupabaseHelpers } from "@supabase/auth-helpers-sveltekit"
 import { env } from "$env/dynamic/public"
 import { dev } from "$app/environment"
+import { writable } from 'svelte/store';
 
 type Topping = 'Schoko' | 'Schoko+Banane' | 'Zimt+Zucker' | 'Apfelmus';
 
@@ -18,7 +19,7 @@ export const supabaseClient = createClient(
   env.PUBLIC_SUPABASE_KEY,
   {
     persistSession: false,
-    autoRefreshToken: false
+    autoRefreshToken: false,
   }
 )
 
@@ -29,80 +30,90 @@ setupSupabaseHelpers({
   }
 })
 
-// const userStore = writable(supabase.auth.user())
+const userStore = writable(supabaseClient.auth.user())
 
-// supabase.auth.onAuthStateChange((event, session) => {
-//   if (event == 'SIGNED_IN' && session) {
-//     userStore.set(session.user)
-//   } else if (event == 'SIGNED_OUT') {
-//     userStore.set(null)
-//   }
-// })
-// const location = import.meta.env.VITE_PUBLIC_SUPABASE_LOCATION
-// const orderTableName = `orders-${location}`
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (event == 'SIGNED_IN' && session) {
+    userStore.set(session.user)
+  } else if (event == 'SIGNED_OUT') {
+    userStore.set(null)
+  }
+})
 
-// const db = {
-//   get user() {
-//     return userStore
-//   },
-//   signUp(email: string, password: string) {
-//     return supabase.auth.signUp({ email, password })
-//   },
-//   signIn(email: string) {
-//     return supabase.auth.signIn({ email })
-//   },
-//   signOut() {
-//     return supabase.auth.signOut()
-//   },
-//   orders: {
-//     async getAll() {
-//       const { body } = await supabase
-//         .from(orderTableName)
-//         .select('*')
-//         .order('nr')
-//       return body as TOrder[]
-//     },
-//     async get() {
-//       const { body } = await supabase
-//         .from(orderTableName)
-//         .select('*')
-//         .order('nr')
-//         .eq('done', false)
-//       return body
-//     },
-//     async stats() {
-//       const { body } = await supabase
-//         .from(orderTableName)
-//         .select('*')
-//         .order('nr')
-//       return body as TOrder[]
-//     },
-//     async create(order: TOrder) {
-//       const { body } = await supabase
-//         .from(orderTableName)
-//         .insert(order)
+const orderTableName = `orders-${env.PUBLIC_SUPABASE_LOCATION}`
 
-//       return body?.[0]
-//     },
+const db = {
+  get user() {
+    return userStore
+  },
+  products: {
+    tableName: `products-${env.PUBLIC_SUPABASE_LOCATION}`,
+    async getAll() {
+      const { body } = await supabaseClient
+        .from(db.products.tableName)
+        .select('*')
+        return body
+    },
+    async uploadImage(file: File) {
+      console.log(file.name);
+      
+      const {data, error} = await supabaseClient.storage.from("product-image").upload(file.name, file)
+      console.log({data,error});
+      
+    },
+    getImage(path: string) {
+      return supabaseClient.storage.from("product-image").getPublicUrl(path)
+    }
+  },
+  orders: {
+    async getAll() {
+      const { body } = await supabaseClient
+        .from(orderTableName)
+        .select('*')
+        .order('nr')
+      return body as TOrder[]
+    },
+    async get() {
+      const { body } = await supabaseClient
+        .from(orderTableName)
+        .select('*')
+        .order('nr')
+        .eq('done', false)
+      return body as TOrder[]
+    },
+    async stats() {
+      const { body } = await supabaseClient
+        .from(orderTableName)
+        .select('*')
+        .order('nr')
+      return body as TOrder[]
+    },
+    async create(order: TOrder) {
+      const { body } = await supabaseClient
+        .from(orderTableName)
+        .insert(order)
 
-//     async finishOrder(order: TOrder) {
-//       const { body } = await supabase
-//         .from(orderTableName)
-//         .update({ done: true })
-//         .match({ nr: order.nr })
+      return body?.[0]
+    },
 
-//       return body?.[0]
-//     }
-//   }
-// }
+    async finishOrder(order: TOrder) {
+      const { body } = await supabaseClient
+        .from(orderTableName)
+        .update({ done: true })
+        .match({ nr: order.nr })
 
-// export const orders = writable<TOrder[]>([])
+      return body?.[0]
+    }
+  }
+}
 
-// supabase.from(orderTableName).on("INSERT", (payload) => {
-//   orders.update(val => {
-//     return [...val, payload.new]
-//   })
-// }).subscribe()
+export const orders = writable<TOrder[]>([])
+
+supabaseClient.from(orderTableName).on("INSERT", (payload) => {
+  orders.update(val => {
+    return [...val, payload.new]
+  })
+}).subscribe()
 
 
-// export default db
+export default db

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import userStore, { type TOrder, orders } from '$lib/stores/db';
+	import userStore, { type TOrder, orders } from '$lib/db';
 
 	export let item: TOrder['topping'];
 	let order: TOrder | undefined;
