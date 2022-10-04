@@ -7,7 +7,8 @@
 	import IoMdMoon from 'svelte-icons/io/IoMdMoon.svelte';
 	import IoMdSunny from 'svelte-icons/io/IoMdSunny.svelte';
 	import IoIosLogOut from 'svelte-icons/io/IoIosLogOut.svelte';
-	import { startSupabaseSessionSync } from '@supabase/auth-helpers-sveltekit';
+	import { startSupabaseSessionSync, supabaseServerClient } from '@supabase/auth-helpers-sveltekit';
+	import Notifications from 'svelte-notifications';
 
 	import { page } from '$app/stores';
 	import { invalidateAll } from '$app/navigation';
@@ -36,48 +37,51 @@
 <svelte:head>
 	<title>Ich Glaub's</title>
 </svelte:head>
-<div
-	class="absolute top-0 flex w-full justify-between bg-transparent px-2 pt-2"
-	data-theme={$theme}
->
-	{#if $page.data.session.user}
-		<button on:click={() => goto('/')}>
-			<div class="h-10 w-10 fill-current">
-				<IoIosHome />
-			</div>
-		</button>
-	{:else}
-		<div />
-	{/if}
 
-	<div class="flex flex-row gap-2">
+<Notifications>
+	<div
+		class="absolute top-0 flex w-full justify-between bg-transparent px-2 pt-2"
+		data-theme={$theme}
+	>
 		{#if $page.data.session.user}
-			<form action="/logout" method="post" use:enhance={logout}>
-				<button class="btn btn-circle p-2" type="submit" alt="Logout">
-					<IoIosLogOut />
-				</button>
-			</form>
-		{/if}
-
-		{#if $theme === 'dracula'}
-			<button on:click={toggleTheme}>
-				<div transition:fade class="h-10 w-10 fill-current">
-					<IoMdMoon />
+			<button on:click={() => goto('/')}>
+				<div class="h-10 w-10 fill-current">
+					<IoIosHome />
 				</div>
 			</button>
 		{:else}
-			<button on:click={toggleTheme}>
-				<div transition:fade class="h-10 w-10 fill-current">
-					<IoMdSunny />
-				</div>
-			</button>
+			<div />
 		{/if}
-	</div>
-</div>
 
-<div
-	style="background-image: radial-gradient(hsla(var(--bc)/.2) .5px,hsla(var(--b2)/1) .5px); background-size: 5px 5px;"
-	class="h-screen min-h-screen w-full bg-base-200 bg-top p-4"
->
-	<slot />
-</div>
+		<div class="flex flex-row gap-2">
+			{#if $page.data.session.user}
+				<form action="/logout" method="post" use:enhance={logout}>
+					<button class="btn btn-circle p-2" type="submit" alt="Logout">
+						<IoIosLogOut />
+					</button>
+				</form>
+			{/if}
+
+			{#if $theme === 'dracula'}
+				<button on:click={toggleTheme}>
+					<div transition:fade class="h-10 w-10 fill-current">
+						<IoMdMoon />
+					</div>
+				</button>
+			{:else}
+				<button on:click={toggleTheme}>
+					<div transition:fade class="h-10 w-10 fill-current">
+						<IoMdSunny />
+					</div>
+				</button>
+			{/if}
+		</div>
+	</div>
+
+	<div
+		style="background-image: radial-gradient(hsla(var(--bc)/.2) .5px,hsla(var(--b2)/1) .5px); background-size: 5px 5px;"
+		class="h-screen min-h-screen w-full bg-base-200 bg-top p-4"
+	>
+		<slot />
+	</div>
+</Notifications>

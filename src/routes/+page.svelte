@@ -34,6 +34,7 @@
 					<input
 						id="email"
 						name="email"
+						autocomplete="username"
 						value={form?.values?.email ?? ''}
 						class="input input-bordered w-full max-w-xs"
 						type="email"
@@ -48,6 +49,7 @@
 					<input
 						id="password"
 						name="password"
+						autocomplete="current-password"
 						value={form?.values?.password ?? ''}
 						class="input input-bordered w-full max-w-xs"
 						type="password"

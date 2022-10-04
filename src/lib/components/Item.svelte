@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { getNotificationsContext } from 'svelte-notifications';
 	import userStore, { type TOrder, orders } from '$lib/db';
+
+	const { addNotification } = getNotificationsContext();
 
 	export let item: TOrder['topping'];
 	let order: TOrder | undefined;
@@ -12,12 +15,30 @@
 			topping: item,
 			extraWish
 		} as TOrder;
-        
-		userStore.orders.create(order).then(() => {
-			userStore.orders.get().then((o) => {
-				$orders = o as TOrder[];
+
+		userStore.orders
+			.create(order)
+			.then(() => {
+				userStore.orders.get().then((o) => {
+					$orders = o as TOrder[];
+				});
+			})
+			.then(() => {
+				addNotification({
+					text: 'Erfolgreich an Küche gesendet',
+					type: 'success',
+					position: 'bottom-center',
+					removeAfter: 3000
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+				addNotification({
+					text: 'Da ist etwas schief gegangen!',
+					type: 'error',
+					position: 'bottom-center'
+				});
 			});
-		});
 		order = undefined;
 	};
 </script>

@@ -1,8 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
-import { setupSupabaseHelpers } from "@supabase/auth-helpers-sveltekit"
 import { env } from "$env/dynamic/public"
 import { dev } from "$app/environment"
 import { writable } from 'svelte/store';
+
+import { createClient } from '@supabase/supabase-js'
+import { setupSupabaseHelpers } from "@supabase/auth-helpers-sveltekit"
 
 type Topping = 'Schoko' | 'Schoko+Banane' | 'Zimt+Zucker' | 'Apfelmus';
 
@@ -13,6 +14,15 @@ export type TOrder = {
   topping: Topping;
   extraWish: string
 };
+
+export type TProduct = {
+  id: number
+  created_at: Date
+  name: string
+  price: number
+  image_path: string
+  active: boolean
+}
 
 export const supabaseClient = createClient(
   env.PUBLIC_SUPABASE_URL,
@@ -50,47 +60,44 @@ const db = {
     tableName: `products-${env.PUBLIC_SUPABASE_LOCATION}`,
     async getAll() {
       const { body } = await supabaseClient
-        .from(db.products.tableName)
+        .from<TProduct>(db.products.tableName)
         .select('*')
-        return body
+      return body
     },
     async uploadImage(file: File) {
-      console.log(file.name);
-      
-      const {data, error} = await supabaseClient.storage.from("product-image").upload(file.name, file)
-      console.log({data,error});
-      
+      return await supabaseClient.storage.from("product-image").upload(file.name, file)
     },
     getImage(path: string) {
-      return supabaseClient.storage.from("product-image").getPublicUrl(path)
+      const { publicURL } = supabaseClient.storage.from("product-image").getPublicUrl(path)
+      return publicURL
     }
   },
   orders: {
     async getAll() {
       const { body } = await supabaseClient
-        .from(orderTableName)
+        .from<TOrder>(orderTableName)
         .select('*')
         .order('nr')
-      return body as TOrder[]
+      return body
     },
     async get() {
       const { body } = await supabaseClient
-        .from(orderTableName)
+        .from<TOrder>(orderTableName)
         .select('*')
         .order('nr')
         .eq('done', false)
-      return body as TOrder[]
+      return body
     },
     async stats() {
       const { body } = await supabaseClient
-        .from(orderTableName)
+        .from<TOrder>(orderTableName)
         .select('*')
         .order('nr')
-      return body as TOrder[]
+      return body
     },
     async create(order: TOrder) {
       const { body } = await supabaseClient
-        .from(orderTableName)
+        .from<TOrder>(orderTableName)
         .insert(order)
 
       return body?.[0]
@@ -98,7 +105,7 @@ const db = {
 
     async finishOrder(order: TOrder) {
       const { body } = await supabaseClient
-        .from(orderTableName)
+        .from<TOrder>(orderTableName)
         .update({ done: true })
         .match({ nr: order.nr })
 
