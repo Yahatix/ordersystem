@@ -1,46 +1,10 @@
 <script lang="ts">
-	import db, { type TProduct } from '$lib/db';
-	import { page } from '$app/stores';
-	import { getNotificationsContext } from 'svelte-notifications';
+	import { products } from '$lib/db';
 	import Product from './Product.svelte';
-	const { addNotification } = getNotificationsContext();
-
-	let products: TProduct[] = [];
-	const user = $page.data.session.user;
-
-	const getProducts = async () => {
-		products = (await db.products.getAll()) || [];
-	};
-
-	$: user && user.id && getProducts();
-
-	let fileEl: HTMLInputElement;
-	const uploadFile = () => {
-		if (!fileEl.files) return;
-		db.products.uploadImage(fileEl.files[0]).then((res) => {
-			if (res.error) {
-				addNotification({
-					text: res.error.message,
-					type: 'error',
-					position: 'bottom-center'
-				});
-				return;
-			}
-			addNotification({
-				text: 'Datei erfolgreich hochgeladen',
-				type: 'success',
-				position: 'bottom-center',
-				removeAfter: 2000
-			});
-		});
-	};
 </script>
 
-<div class="flex h-full flex-col items-center justify-center">
-	{#each products as product}
+<div class="flex h-full w-full flex-row gap-4 items-center justify-center">
+	{#each $products as product}
 		<Product {product} />
 	{/each}
-	<br />
-	<input class="" bind:this={fileEl} type="file" name="" />
-	<button class="btn" on:click={uploadFile}>Upload</button>
 </div>

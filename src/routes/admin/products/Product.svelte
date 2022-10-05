@@ -5,6 +5,11 @@
 	export let product: TProduct;
 
 	const public_image_path = db.products.getImage(product.image_path);
+
+	const handleToggleActive = () => {
+		db.products.toggleActive(product);
+		product.active = !product.active;
+	};
 </script>
 
 <div class="card w-96 bg-base-100 shadow-xl">
@@ -12,5 +17,12 @@
 	<div class="card-body">
 		<h2 class="card-title">{product.name}</h2>
 		<p>{curr_formatter.format(product.price)}</p>
+		<button
+			class="btn"
+			class:btn-success={!product.active}
+			class:btn-error={product.active}
+			on:click={handleToggleActive}>{product.active ? 'Deaktivieren' : 'Aktivieren'}</button
+		>
+		<a class="btn" href={`/admin/products/edit/${product.id}`}>Bearbeiten</a>
 	</div>
 </div>
