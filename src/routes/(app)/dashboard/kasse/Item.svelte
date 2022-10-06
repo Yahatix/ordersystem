@@ -6,11 +6,11 @@
 
 	const { addNotification } = getNotificationsContext();
 
-	export let product: TProduct;
-	let order: TOrder | undefined;
+	export let product: Required<TProduct>;
+	let order: TOrder<number>
 	let extraWish: string;
 
-	const sendOrderToKitchen = (item: TProduct) => {
+	const sendOrderToKitchen = (item: Required<TProduct>) => {
 		order = {
 			done: false,
 			product: item.id,
@@ -38,7 +38,6 @@
 					position: 'bottom-center'
 				});
 			});
-		order = undefined;
 	};
 </script>
 

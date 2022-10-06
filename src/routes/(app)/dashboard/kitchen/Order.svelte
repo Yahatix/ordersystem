@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { scale } from 'svelte/transition';
-	import orderStore, { orders, type TOrder } from '$lib/db';
+	import orderStore, { type TOrder } from '$lib/db';
 	import db from '$lib/db';
 
 	export let order: TOrder;
 	
-	const finishOrder = () => {
-		orderStore.orders.finishOrder(order);
-		$orders = $orders.filter((o) => o.nr !== order.nr);
-	};
+	const finishOrder = () => orderStore.orders.finishOrder(order);
 </script>
 
 	<div transition:scale class="card image-full mb-4 w-fit max-w-xs shadow-xl">
@@ -23,7 +20,7 @@
 		<div class="card-body justify-between">
 			<div class="rounded bg-base-content/60 p-2 text-base-200">
 				<div class="card-title">{order.product.name}</div>
-				<div>Nr: {order.nr}</div>
+				<div>Nr: {order.id}</div>
 				{#if order.extraWish}
 					<div>{order.extraWish}</div>
 				{/if}
