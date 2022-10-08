@@ -1,5 +1,5 @@
 <script lang="ts">
-	import db, { orderStats, finishedOrders } from '$lib/db';
+	import db, { orderStats, finishedOrders } from '$lib/dbAPI';
 	import { curr_formatter } from '$lib/utils';
 
 	$: totalMoney = curr_formatter.format(

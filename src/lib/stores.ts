@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-import type { TOrder } from "$lib/db";
+import type { CurrentOrderItem } from "$lib/dbAPI";
 
-
-export const currentOrder = writable<TOrder[]>([]);
+export const currentOrder = writable<CurrentOrderItem[]>([]);

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import db, { products, type TProduct } from '$lib/db';
+	import db, { products, type Product } from '$lib/dbAPI';
 	import { fly } from 'svelte/transition';
 
 	const productId = $page.params.id;
-	$: product = $products.find((p) => p.id === +productId) as TProduct;
+	$: product = $products.find((p) => p.id === +productId) as Product;
 
 	let public_image_path: string;
 	$: {

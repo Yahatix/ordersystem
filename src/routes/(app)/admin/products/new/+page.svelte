@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import db, { type TProduct } from '$lib/db';
+	import db, { type ProductRequest } from '$lib/dbAPI';
 	import { getNotificationsContext } from 'svelte-notifications';
 	import { fly } from 'svelte/transition';
 	const { addNotification } = getNotificationsContext();
 
-	let product: TProduct = {
+	let product: ProductRequest = {
 		active: false,
 		name: '',
 		price: 0,
@@ -44,7 +44,7 @@
 	};
 </script>
 
-<div class="flex h-full flex-col items-center justify-center">
+<div class="mt-14 flex h-full flex-col items-center justify-center">
 	<div class="form-control flex flex-col gap-2">
 		{#if product.name !== ''}
 			<label class="label" for="name" transition:fly={{ y: 50 }}>
@@ -53,32 +53,35 @@
 		{/if}
 		<input
 			type="text"
-			name="name"
+			id="name"
 			placeholder="Produktname"
 			class="input input-bordered"
 			bind:value={product.name}
 		/>
 
-		{#if product.price !== null}
-			<label class="label" for="price" transition:fly={{ y: 50 }}>
-				<span class="label-text">Preis</span>
+		<div class="form-control">
+			<label class="input-group">
+				<span>Preis</span>
+				<input
+					type="number"
+					placeholder="1"
+					step="0.5"
+					min="0"
+					class="input input-bordered"
+					bind:value={product.price}
+				/>
+				<span>EUR</span>
 			</label>
-		{/if}
-		<input
-			type="number"
-			name="price"
-			placeholder="Preis"
-			class="input input-bordered"
-			bind:value={product.price}
-		/>
+		</div>
 
 		<div>
 			<label class="label" for="active">
 				<span class="label-text">Aktiv?</span>
 			</label>
-			<input class="toggle" type="checkbox" name="" id="" bind:value={product.active} />
+			<input class="toggle" type="checkbox" id="active" bind:value={product.active} />
 		</div>
-		<input class="file-input" bind:this={fileEl} type="file" name="" />
+		<label class="btn" for="image">Bild auswählen</label>
+		<input class="hidden" bind:this={fileEl} type="file" id="image" accept="image/*" />
 		<button class="btn" class:btn-disabled={!validProduct} on:click={createProduct}
 			>Neues Produkt anlegen</button
 		>

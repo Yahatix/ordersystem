@@ -1,52 +1,20 @@
 <script lang="ts">
-	import { getNotificationsContext } from 'svelte-notifications';
-	import userStore, { type TOrder, orders, type TProduct } from '$lib/db';
-	import db from '$lib/db';
+	import db, { type Product } from '$lib/dbAPI';
 	import { curr_formatter } from '$lib/utils';
 	import { currentOrder } from '$lib/stores';
 
-	const { addNotification } = getNotificationsContext();
+	export let product: Product;
+	let extraWish: string = '';
 
-	export let product: Required<TProduct>;
-	let order: TOrder<number>;
-	let extraWish: string;
-
-	const sendOrderToKitchen = (item: Required<TProduct>) => {
+	const sendOrderToKitchen = () => {
 		$currentOrder = [
 			...$currentOrder,
 			{
-				done: false,
-				product: item,
+				product,
 				extraWish
 			}
 		];
-		extraWish = ""
-		return;
-
-		order = {
-			done: false,
-			product: item.id,
-			extraWish
-		};
-
-		userStore.orders
-			.create(order)
-			.then((res) => {
-				addNotification({
-					text: `Bestellung: ${res?.id} Erfolgreich an Küche gesendet`,
-					type: 'success',
-					position: 'bottom-center',
-					removeAfter: 3000
-				});
-			})
-			.catch((error) => {
-				console.error(error);
-				addNotification({
-					text: 'Da ist etwas schief gegangen!' + error,
-					type: 'error',
-					position: 'bottom-center'
-				});
-			});
+		extraWish = '';
 	};
 </script>
 
@@ -63,6 +31,6 @@
 			type="text"
 			placeholder="Sonderwünsche"
 		/>
-		<button class="btn" on:click={() => sendOrderToKitchen(product)}>Bestellen</button>
+		<button class="btn" on:click={sendOrderToKitchen}>Bestellen</button>
 	</div>
 </div>

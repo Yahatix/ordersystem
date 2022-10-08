@@ -1,14 +1,14 @@
 <script lang="ts">
-	import db, { type TProduct } from '$lib/db';
+	import db, { type Product } from '$lib/dbAPI';
 	import { curr_formatter } from '$lib/utils';
 
-	export let product: TProduct;
+	export let product: Product;
 
 	const public_image_path = db.products.getImage(product);
 
 	const handleToggleActive = () => {
-		db.products.toggleActive(product);
 		product.active = !product.active;
+		db.products.update(product);
 	};
 </script>
 
