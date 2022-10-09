@@ -3,7 +3,7 @@
 	import Product from './Product.svelte';
 </script>
 
-<div class="flex h-full w-full flex-row items-center justify-center gap-4 mt-14">
+<div class="mt-14 flex h-full w-full flex-row flex-wrap items-center justify-center gap-4">
 	{#each $products as product}
 		<Product {product} />
 	{/each}
