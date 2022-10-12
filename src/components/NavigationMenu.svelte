@@ -3,8 +3,11 @@
 	import { beforeNavigate, invalidateAll } from '$app/navigation';
 	import IoIosLogOut from 'svelte-icons/io/IoIosLogOut.svelte';
 	import Drawer from './Drawer.svelte';
+	import db from '$lib/dbAPI';
 
 	export let isMenuOpen = false;
+
+	let statDays = db.orders.getOrderDays();
 
 	beforeNavigate(() => {
 		isMenuOpen = false;
@@ -16,11 +19,17 @@
 			applyAction(result);
 		};
 	};
+
+	const toLocalDateString = (dateStr: string): string => {
+		const d = new Date(dateStr)
+		const dateFormatter = Intl.DateTimeFormat('de', {weekday: 'long'})
+		return dateFormatter.format(d)
+	}
 </script>
 
 <button class="btn absolute top-4 right-4" on:click={() => (isMenuOpen = true)}>Menu</button>
 <Drawer bind:open={isMenuOpen} position="right">
-	<ul class="menu w-80 h-full overflow-y-auto p-4 text-base-content">
+	<ul class="menu h-full w-80 overflow-y-auto p-4 text-base-content">
 		<div class="flex h-full w-full flex-col justify-between">
 			<div>
 				<li>
@@ -28,7 +37,6 @@
 					<ul class="menu menu-compact">
 						<li><a href="/dashboard/kasse" class="pl-8">Kasse</a></li>
 						<li><a href="/dashboard/kitchen" class="pl-8">Küche</a></li>
-						<li><a href="/dashboard/stats" class="pl-8">Stats</a></li>
 						<li><a href="/dashboard/beamer" class="pl-8">Beamer</a></li>
 					</ul>
 				</li>
@@ -36,6 +44,16 @@
 					<a class="Products" href="/admin/products">Products</a>
 					<ul class="menu menu-compact">
 						<li><a href="/admin/products/new" class="pl-8">Neu</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="/dashboard/stats">Stats</a>
+					<ul class="menu menu-compact block">
+						{#await statDays then days}
+							{#each days as day}
+								<li><a href={`/dashboard/stats/${day}`} class="pl-8">{toLocalDateString(day)}</a></li>
+							{/each}
+						{/await}
 					</ul>
 				</li>
 			</div>

@@ -15,14 +15,14 @@
 {#if open}
 	<div
 		class="absolute top-0 left-0 z-20 grid h-screen w-screen"
-		class:grid-cols-[320px_1fr]={position === 'left'}
-		class:grid-cols-[1fr_320px]={position === 'right'}
+		class:grid-cols-[minmax(160px,320px)_minmax(100px,1fr)]={position === 'left'}
+		class:grid-cols-[minmax(100px,1fr)_minmax(160px,320px)]={position === 'right'}
 		transition:fade={{ duration: 300 }}
 	>
 		{#if position === 'right'}
 			<div on:click={closeDrawer} class="cursor-pointer bg-gray-900/80" />
 		{/if}
-		<div class="h-screen w-80 overflow-y-auto overflow-x-hidden bg-base-300">
+		<div class="h-screen w-full overflow-y-auto overflow-x-hidden bg-base-300">
 			<slot />
 		</div>
 		{#if position === 'left'}

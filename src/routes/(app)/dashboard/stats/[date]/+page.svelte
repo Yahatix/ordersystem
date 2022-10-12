@@ -1,12 +1,33 @@
 <script lang="ts">
-	import db, { orderStats, deliveredOrders } from '$lib/dbAPI';
+	import { page } from '$app/stores';
+	import db, { type Product } from '$lib/dbAPI';
 	import { curr_formatter } from '$lib/utils';
 
-	$: totalMoney = curr_formatter.format(
-		$orderStats.reduce((curr, stat) => curr + stat[1][0].price * stat[1][1], 0)
-	);
+	const getStats = async (day: string): Promise<[number, [Product, number]][]> => {
+		const statsRes = await db.orders.getByDate(new Date(day));
 
-	$: totalOrders = $deliveredOrders.reduce((curr, stat) => curr + stat.orderItem.length, 0);
+		return [
+			...statsRes
+				.flatMap((a) => a.orderItem)
+				.reduce((curr, orderItem) => {
+					const toppingStats = curr.get(orderItem.product.id)?.[1] || 0;
+					curr.set(orderItem.product.id, [orderItem.product, toppingStats + 1]);
+					return curr;
+				}, new Map<number, [Product, number]>())
+		].sort((a, b) => {
+			if (a[0] > b[0]) return -1;
+			if (a[0] < b[0]) return 1;
+			return 0;
+		});
+	};
+
+	let stats: [number, [Product, number]][] = [];
+	$: getStats($page.params.date).then((res) => (stats = res));
+
+	$: totalMoney = curr_formatter.format(
+		stats.reduce((curr, stat) => curr + stat[1][0].price * stat[1][1], 0)
+	);
+	$: totalOrders = stats.reduce((curr, stat) => curr + stat[1][1], 0);
 </script>
 
 <div class="w-full overflow-x-auto pt-16">
@@ -20,7 +41,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each $orderStats as stat}
+			{#each stats as stat}
 				<!-- row 1 -->
 				{@const product = stat[1][0]}
 				{@const count = stat[1][1]}

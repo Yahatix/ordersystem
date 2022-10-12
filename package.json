@@ -12,10 +12,10 @@
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-vercel": "next",
-		"@sveltejs/kit": "1.0.0-next.511",
-		"@typescript-eslint/eslint-plugin": "^5.39.0",
-		"@typescript-eslint/parser": "^5.39.0",
+		"@sveltejs/adapter-vercel": "1.0.0-next.78",
+		"@sveltejs/kit": "1.0.0-next.514",
+		"@typescript-eslint/eslint-plugin": "^5.40.0",
+		"@typescript-eslint/parser": "^5.40.0",
 		"autoprefixer": "^10.4.12",
 		"daisyui": "^2.31.0",
 		"eslint": "^8.25.0",
@@ -26,15 +26,15 @@
 		"prettier": "^2.7.1",
 		"prettier-plugin-tailwindcss": "^0.1.13",
 		"renderless-svelte": "^1.7.0",
-		"svelte": "^3.50.1",
-		"svelte-check": "^2.9.1",
+		"svelte": "^3.51.0",
+		"svelte-check": "^2.9.2",
 		"svelte-icons": "^2.1.0",
 		"svelte-notifications": "^0.9.97",
 		"svelte-preprocess": "^4.10.7",
 		"tailwindcss": "^3.1.8",
 		"tslib": "^2.4.0",
 		"typescript": "^4.8.4",
-		"vite": "^3.1.6"
+		"vite": "^3.1.7"
 	},
 	"type": "module",
 	"dependencies": {

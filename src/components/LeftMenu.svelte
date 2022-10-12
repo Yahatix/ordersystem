@@ -36,11 +36,11 @@
 </script>
 
 {#if $page.routeId === '(app)/dashboard/kasse'}
-	<div class:blur-md={isDrawerOpen}>
+	<div class:blur-md={isDrawerOpen} class="flex gap-2 flex-wrap">
 		<button class="btn" on:click={openOrderMenu}
 			>Bestellung<span class="badge badge-success ml-1">{$total}</span></button
 		>
-		<button class="btn" on:click={openFinishedOrderMenu}
+		<button class="btn mr-20" on:click={openFinishedOrderMenu}
 			>Fertig:<span class="badge badge-success ml-1">{$finishedOrders.length}</span></button
 		>
 	</div>

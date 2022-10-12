@@ -19,7 +19,7 @@
 			.create($currentOrder)
 			.then((res) => {
 				addNotification({
-					text: `Bestellung: ${res?.id} Erfolgreich an Küche gesendet`,
+					text: `Bestellung: <span class="text-xl">${res?.id}</span> Erfolgreich an Küche gesendet`,
 					type: 'success',
 					position: 'bottom-center',
 					removeAfter: 5000
@@ -42,8 +42,9 @@
 
 <div class="flex h-full flex-col justify-between">
 	<div class="flex flex-col gap-2 overflow-y-auto">
-		<div class="border-b-4 border-slate-500 p-4">
+		<div class="flex items-center justify-between border-b-4 border-slate-500 p-4">
 			<p class="text-xl font-bold">Bestellung:</p>
+			<button class="btn" on:click={() => dispatch('close')}>X</button>
 		</div>
 		<div class="flex flex-col gap-2 px-4">
 			{#each sortedOrder as order, index}

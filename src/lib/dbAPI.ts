@@ -14,6 +14,7 @@ export interface OrderRequest {
 
 export interface Order extends OrderRequest {
   id: number
+  created_at: string
   orderItem: OrderItem[]
 }
 
@@ -43,7 +44,7 @@ export interface Product extends ProductRequest {
   id: number
 }
 
-const userStore = writable(supabaseClient.auth.user())
+export const userStore = writable(supabaseClient.auth.user())
 
 supabaseClient.auth.onAuthStateChange((event, session) => {
   if (event == 'SIGNED_IN' && session) {
@@ -105,6 +106,37 @@ const db = {
         .from<Order>(db.orders.tableName)
         .select('*, orderItem(extraWish, product(*))')
       return body || []
+    },
+    async getByDate(day: Date) {
+      const start = new Date(day)
+      start.setHours(0, 0, 0, 0)
+      const end = new Date(day)
+      end.setHours(23, 59, 59, 999)
+
+      const datestring = (d: Date) => d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
+        ("0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+      const { body } = await supabaseClient
+        .from<Order>(db.orders.tableName)
+        .select('*, orderItem(product(*))')
+        .gt('created_at', datestring(start))
+        .lt('created_at', datestring(end))
+      return body || []
+    },
+    async getOrderDays() {
+      const { body } = await supabaseClient
+        .from(db.orders.tableName)
+        .select("created_at")
+        .eq("delivered", true)
+        .eq("done", true)
+        .order('delivered')
+      const daysWithStats = [...new Set(body?.map(d => {
+        const date = new Date(d.created_at)
+        date.setHours(0, 0, 0, 0)
+        return date.toDateString()
+      }))]
+      return daysWithStats
+
     },
     async create(items: CurrentOrderItem[]) {
       const { body } = await supabaseClient

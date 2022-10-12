@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Item from './Item.svelte';
-	import { activeProducts, products } from '$lib/dbAPI';
+	import { activeProducts } from '$lib/dbAPI';
 </script>
 
 <svelte:head>
