@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import db, { type ProductRequest } from '$lib/dbAPI';
-	import { getNotificationsContext } from 'svelte-notifications';
+	import { toast } from 'svelte-sonner';
 	import { fly } from 'svelte/transition';
-	const { addNotification } = getNotificationsContext();
 
-	let product: ProductRequest = {
+	let product: ProductRequest = $state({
 		active: false,
 		name: '',
 		price: 0,
 		image_path: ''
-	};
-	let fileEl: HTMLInputElement;
+	});
+	let fileEl: HTMLInputElement = $state();
 
-	$: validProduct = product.name !== '' && product.price !== null;
+	let validProduct = $derived(product.name !== '' && product.price !== null);
 
 	const createProduct = () => {
 		if (!fileEl.files) return;
@@ -27,27 +26,20 @@
 		if (!fileEl.files) return;
 		db.products.uploadImage(fileEl.files[0]).then((res) => {
 			if (res.error) {
-				addNotification({
-					text: res.error.message,
-					type: 'error',
-					position: 'bottom-center'
-				});
+				toast.error(res.error.message);
 				return;
 			}
-			addNotification({
-				text: 'Datei erfolgreich hochgeladen',
-				type: 'success',
-				position: 'bottom-center',
-				removeAfter: 2000
+			toast.success('Datei erfolgreich hochgeladen', {
+				duration: 2000
 			});
 		});
 	};
 </script>
 
 <div class="mt-14 flex h-full flex-col items-center justify-center">
-	<div class="form-control flex flex-col gap-2">
+	<div class="form-control gap-2 flex flex-col">
 		{#if product.name !== ''}
-			<label class="label" for="name" transition:fly={{ y: 50 }}>
+			<label class="label" for="name" transition:fly|global={{ y: 50 }}>
 				<span class="label-text">Produktname</span>
 			</label>
 		{/if}
@@ -78,11 +70,11 @@
 			<label class="label" for="active">
 				<span class="label-text">Aktiv?</span>
 			</label>
-			<input class="toggle" type="checkbox" id="active" bind:value={product.active} />
+			<input class="toggle" type="checkbox" id="active" bind:checked={product.active} />
 		</div>
 		<label class="btn" for="image">Bild auswählen</label>
 		<input class="hidden" bind:this={fileEl} type="file" id="image" accept="image/*" />
-		<button class="btn" class:btn-disabled={!validProduct} on:click={createProduct}
+		<button class="btn" class:btn-disabled={!validProduct} onclick={createProduct}
 			>Neues Produkt anlegen</button
 		>
 	</div>

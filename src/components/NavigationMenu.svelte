@@ -1,11 +1,16 @@
 <script lang="ts">
-	import { applyAction, enhance, type SubmitFunction } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { beforeNavigate, invalidateAll } from '$app/navigation';
 	import IoIosLogOut from 'svelte-icons/io/IoIosLogOut.svelte';
 	import Drawer from './Drawer.svelte';
 	import db from '$lib/dbAPI';
+	import type { SubmitFunction } from '../routes/(app)/logout/$types';
 
-	export let isMenuOpen = false;
+	interface Props {
+		isMenuOpen?: boolean;
+	}
+
+	let { isMenuOpen = $bindable(false) }: Props = $props();
 
 	let statDays = db.orders.getOrderDays();
 
@@ -21,15 +26,15 @@
 	};
 
 	const toLocalDateString = (dateStr: string): string => {
-		const d = new Date(dateStr)
-		const dateFormatter = Intl.DateTimeFormat('de', {weekday: 'long'})
-		return dateFormatter.format(d)
-	}
+		const d = new Date(dateStr);
+		const dateFormatter = Intl.DateTimeFormat('de', { weekday: 'long' });
+		return dateFormatter.format(d);
+	};
 </script>
 
-<button class="btn absolute top-4 right-4" on:click={() => (isMenuOpen = true)}>Menu</button>
+<button class="btn top-4 right-4 absolute" onclick={() => (isMenuOpen = true)}>Menu</button>
 <Drawer bind:open={isMenuOpen} position="right">
-	<ul class="menu h-full w-80 overflow-y-auto p-4 text-base-content">
+	<ul class="menu w-80 p-4 text-base-content h-full overflow-y-auto">
 		<div class="flex h-full w-full flex-col justify-between">
 			<div>
 				<li>
@@ -51,7 +56,9 @@
 					<ul class="menu menu-compact block">
 						{#await statDays then days}
 							{#each days as day}
-								<li><a href={`/dashboard/stats/${day}`} class="pl-8">{toLocalDateString(day)}</a></li>
+								<li>
+									<a href={`/dashboard/stats/${day}`} class="pl-8">{toLocalDateString(day)}</a>
+								</li>
 							{/each}
 						{/await}
 					</ul>
@@ -59,7 +66,7 @@
 			</div>
 			<li>
 				<form action="/logout" method="post" use:enhance={logout}>
-					<button class="flex flex-row items-center gap-3" type="submit" alt="Logout">
+					<button class="gap-3 flex flex-row items-center" type="submit">
 						<div class="h-10 w-10 fill-current"><IoIosLogOut /></div>
 						<span>Abmelden</span>
 					</button>

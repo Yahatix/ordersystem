@@ -1,12 +1,13 @@
 import { redirect } from '@sveltejs/kit';
-import { withAuth } from '@supabase/auth-helpers-sveltekit';
-import type { LayoutServerLoad } from "./$types";
+import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = withAuth(({ session }) => {
-  if (!session.user) {
-    throw redirect(303, '/');
-  }
-  return {
-    session
-  };
-});
+export const load: LayoutServerLoad = async ({ locals }) => {
+    const session = await locals.safeGetSession()
+    
+    if (!session.session) {
+        redirect(303, '/');
+    }
+    return {
+        session: session.session
+    };
+};

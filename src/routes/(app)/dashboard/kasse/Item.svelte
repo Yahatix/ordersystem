@@ -3,8 +3,12 @@
 	import { curr_formatter } from '$lib/utils';
 	import { currentOrder } from '$lib/stores';
 
-	export let product: Product;
-	let extraWish: string = '';
+	interface Props {
+		product: Product;
+	}
+
+	let { product }: Props = $props();
+	let extraWish = $state('');
 
 	const addProductToCurrentOrder = () => {
 		$currentOrder = [
@@ -14,13 +18,16 @@
 				extraWish
 			}
 		];
+		
 		extraWish = '';
 	};
+	// svelte-ignore state_referenced_locally
+		const imageSrc = $state(db.products.getImage(product));
 </script>
 
 <div class="card w-96 bg-base-100 shadow-xl">
 	<figure>
-		<img src={db.products.getImage(product)} alt={product.name} width="384" height="384" />
+		<img src={imageSrc} alt={product.name} width="384" height="384" />
 	</figure>
 	<div class="card-body">
 		<h2 class="card-title">{product.name}</h2>
@@ -31,6 +38,6 @@
 			type="text"
 			placeholder="Sonderwünsche"
 		/>
-		<button class="btn" on:click={addProductToCurrentOrder}>Hinzufügen</button>
+		<button class="btn" onclick={addProductToCurrentOrder}>Hinzufügen</button>
 	</div>
 </div>

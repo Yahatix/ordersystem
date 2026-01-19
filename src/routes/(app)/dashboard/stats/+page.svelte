@@ -2,14 +2,18 @@
 	import db, { orderStats, deliveredOrders } from '$lib/dbAPI';
 	import { curr_formatter } from '$lib/utils';
 
-	$: totalMoney = curr_formatter.format(
-		$orderStats.reduce((curr, stat) => curr + stat[1][0].price * stat[1][1], 0)
+	let totalMoney = $derived(
+		curr_formatter.format(
+			$orderStats.reduce((curr, stat) => curr + stat[1][0].price * stat[1][1], 0)
+		)
 	);
 
-	$: totalOrders = $deliveredOrders.reduce((curr, stat) => curr + stat.orderItem.length, 0);
+	let totalOrders = $derived(
+		$deliveredOrders.reduce((curr, stat) => curr + stat.orderItem.length, 0)
+	);
 </script>
 
-<div class="w-full overflow-x-auto pt-16">
+<div class="pt-16 w-full overflow-x-auto">
 	<table class="table w-full">
 		<!-- head -->
 		<thead>
@@ -26,7 +30,7 @@
 				{@const count = stat[1][1]}
 				<tr class="hover">
 					<td>
-						<div class="flex items-center space-x-3">
+						<div class="space-x-3 flex items-center">
 							<div class="avatar">
 								<div class="mask mask-squircle h-16 w-16">
 									<img src={db.products.getImage(product)} alt={product.name} />

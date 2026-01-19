@@ -1,9 +1,14 @@
 <script lang="ts">
-	import { applyAction, enhance, type SubmitFunction } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
+	import type { ActionData, SubmitFunction } from './$types';
 
-	export let form: any;
-	let loading = false;
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
+	let loading = $state(false);
 
 	const handleSubmit: SubmitFunction = () => {
 		loading = true;
@@ -22,9 +27,9 @@
 		{#if form?.error}
 			<div class="notification is-danger block">{form.error}</div>
 		{/if}
-		<form method="post" use:enhance={handleSubmit} class="flex flex-col gap-4">
-			<h1 class="mb-4 text-center text-2xl font-bold">Anmelden</h1>
-			<div class="form-control w-full max-w-xs">
+		<form method="post" use:enhance={handleSubmit} class="gap-4 flex flex-col">
+			<h1 class="mb-4 text-2xl font-bold text-center">Anmelden</h1>
+			<div class="form-control max-w-xs w-full">
 				<label for="email" class="input-group">
 					<span class="label-text">Email</span>
 					<input
@@ -39,7 +44,7 @@
 					/>
 				</label>
 			</div>
-			<div class="form-control w-full max-w-xs">
+			<div class="form-control max-w-xs w-full">
 				<label for="email" class="input-group">
 					<span class="label-text">Password</span>
 					<input

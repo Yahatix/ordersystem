@@ -20,7 +20,7 @@ Das Ichglaubs Bestellsystem ist eine vollständige Webanwendung zur Verwaltung v
 - **Framework:** [SvelteKit](https://kit.svelte.dev/)
 - **Sprache:** TypeScript
 - **Backend/DB:** [Supabase](https://supabase.com/)
-- **Styling:** 
+- **Styling:**
   - [TailwindCSS](https://tailwindcss.com/)
   - [DaisyUI](https://daisyui.com/)
 - **Deployment:** Vercel (Adapter konfiguriert)
@@ -36,22 +36,27 @@ Das Ichglaubs Bestellsystem ist eine vollständige Webanwendung zur Verwaltung v
 ### Setup
 
 1. **Repository klonen:**
+
    ```bash
    git clone <repository-url>
    cd ichglaubs-ordersystem
    ```
 
 2. **Dependencies installieren:**
+
    ```bash
    pnpm install
    ```
 
 3. **Umgebungsvariablen einrichten:**
-   
+
    Erstelle eine `.env` Datei im Root-Verzeichnis:
+
    ```env
    PUBLIC_SUPABASE_URL=deine-supabase-url
    PUBLIC_SUPABASE_KEY=dein-supabase-anon-key
+   PUBLIC_SUPABASE_ORDER_TABLE=deine-bestell-tabelle
+   PUBLIC_SUPABASE_PRODUCT_TABLE=deine-produkt-tabelle
    ```
 
 4. **Supabase Projekt einrichten:**
@@ -91,9 +96,10 @@ pnpm preview
 
 ### Deployment
 
-Das Projekt ist für Vercel konfiguriert (`@sveltejs/adapter-vercel`). 
+Das Projekt ist für Vercel konfiguriert (`@sveltejs/adapter-vercel`).
 
 Für Deployment auf Vercel:
+
 1. Repository mit Vercel verbinden
 2. Umgebungsvariablen in Vercel setzen
 3. Deploy ausführen
@@ -107,6 +113,7 @@ pnpm check
 ```
 
 Mit Watch-Modus:
+
 ```bash
 pnpm check:watch
 ```
@@ -120,11 +127,13 @@ pnpm lint
 ### Code-Formatierung
 
 Code formatieren:
+
 ```bash
 pnpm format
 ```
 
 Formatierung überprüfen:
+
 ```bash
 prettier --check --plugin-search-dir=. .
 ```
@@ -165,11 +174,13 @@ Das Projekt nutzt Supabase Auth mit den `@supabase/auth-helpers-sveltekit`. Die 
 ## 🎨 Styling
 
 Das Projekt verwendet:
+
 - **TailwindCSS** für Utility-First CSS
 - **DaisyUI** für vorgefertigte UI-Komponenten
 - **Autoprefixer** für Browser-Kompatibilität
 
 Konfigurationsdateien:
+
 - `tailwind.config.cjs`
 - `postcss.config.cjs`
 
@@ -180,3 +191,4 @@ Alle Rechte vorbehalten.
 ## 👨‍💻 Entwicklung
 
 Entwickelt mit ❤️ unter Verwendung von SvelteKit und Supabase.
+.

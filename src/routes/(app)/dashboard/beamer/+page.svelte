@@ -8,7 +8,7 @@
 
 	import { finishedOrders, unfinishedOrders } from '$lib/dbAPI';
 
-	let controls: CarouselControls;
+	let controls: CarouselControls = $state();
 
 	onMount(() => {
 		const id = setInterval(() => {
@@ -41,35 +41,37 @@
 	];
 </script>
 
-<div class="grid h-full w-full grid-cols-2 gap-2">
+<div class="gap-2 grid h-full w-full grid-cols-2">
 	<div class="flex h-full w-full items-center justify-center">
 		<!-- Werbeblock -->
-		<Carousel items={images} loop let:payload bind:controls>
-			<img src={payload} alt="" class="max-h-[calc(100vh-32px)]" />
+		<Carousel items={images} loop bind:controls>
+			{#snippet children({ payload })}
+				<img src={payload} alt="" class="max-h-[calc(100vh-32px)]" />
+			{/snippet}
 		</Carousel>
 	</div>
-	<div class="grid grid-cols-2 justify-center gap-2">
-		<div class="flex flex-col items-center gap-2">
-			<h2 class="mb-2 text-center text-3xl font-bold underline">In bearbeitung</h2>
+	<div class="gap-2 grid grid-cols-2 justify-center">
+		<div class="gap-2 flex flex-col items-center">
+			<h2 class="mb-2 text-3xl font-bold text-center underline">In bearbeitung</h2>
 			{#each $unfinishedOrders as order (order.id)}
 				<div
-					in:receive={{ key: order.id }}
-					out:send={{ key: order.id }}
+					in:receive|global={{ key: order.id }}
+					out:send|global={{ key: order.id }}
 					animate:flip
-					class="w-fit min-w-[10rem] max-w-xs rounded-lg bg-amber-500 p-2 text-center text-3xl font-bold"
+					class="max-w-xs rounded-lg bg-amber-500 p-2 text-3xl font-bold w-fit min-w-[10rem] text-center"
 				>
 					{order.id}
 				</div>
 			{/each}
 		</div>
-		<div class="flex flex-col  items-center gap-2">
-			<h2 class="mb-2 text-center text-3xl font-bold underline">Abholbereit</h2>
+		<div class="gap-2 flex flex-col items-center">
+			<h2 class="mb-2 text-3xl font-bold text-center underline">Abholbereit</h2>
 			{#each $finishedOrders as order (order.id)}
 				<div
-					in:receive={{ key: order.id }}
-					out:send={{ key: order.id }}
+					in:receive|global={{ key: order.id }}
+					out:send|global={{ key: order.id }}
 					animate:flip
-					class="w-fit min-w-[10rem] max-w-xs rounded-lg bg-green-500 p-2 text-center text-3xl font-bold"
+					class="max-w-xs rounded-lg bg-green-500 p-2 text-3xl font-bold w-fit min-w-[10rem] text-center"
 				>
 					{order.id}
 				</div>

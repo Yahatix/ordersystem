@@ -9,7 +9,7 @@
 </svelte:head>
 
 <div
-	class="flex flex-wrap gap-3 pt-14"
+	class="gap-3 pt-14 flex flex-wrap"
 	class:h-full={$unfinishedOrders.length < 1}
 	class:justify-center={$unfinishedOrders.length < 1}
 >

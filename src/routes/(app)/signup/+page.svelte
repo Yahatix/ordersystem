@@ -2,10 +2,14 @@
 	import { applyAction, enhance, type SubmitFunction } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 
-	export let errors: Record<string, string> = {};
-	export let values: Record<string, string> = {};
-	export let message: string = '';
-	let loading = false;
+	interface Props {
+		errors?: Record<string, string>;
+		values?: Record<string, string>;
+		message?: string;
+	}
+
+	let { errors = {}, values = {}, message = '' }: Props = $props();
+	let loading = $state(false);
 
 	const handleSubmit: SubmitFunction = () => {
 		loading = true;
@@ -27,9 +31,9 @@
 		<div class="notification is-primary block">{message}</div>
 	{/if}
 
-	<form method="post" use:enhance={handleSubmit} class="flex flex-col items-center gap-4">
+	<form method="post" use:enhance={handleSubmit} class="gap-4 flex flex-col items-center">
 		<h1 class="mb-4 text-2xl font-bold">Registrieren</h1>
-		<div class="form-control w-full max-w-xs">
+		<div class="form-control max-w-xs w-full">
 			<label for="email" class="input-group">
 				<span class="label-text">Email</span>
 				<input
@@ -43,7 +47,7 @@
 				/>
 			</label>
 		</div>
-		<div class="form-control w-full max-w-xs">
+		<div class="form-control max-w-xs w-full">
 			<label for="email" class="input-group w-full">
 				<span class="label-text">Password</span>
 				<input
@@ -57,7 +61,7 @@
 				/>
 			</label>
 		</div>
-		<button disabled={loading} class="btn w-full max-w-xs">Registrieren</button>
+		<button disabled={loading} class="btn max-w-xs w-full">Registrieren</button>
 		<p class="has-text-centered">
 			Du hast schon einen Account? <a href="/">Anmelden</a>
 		</p>

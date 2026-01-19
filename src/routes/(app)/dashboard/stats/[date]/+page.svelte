@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { page } from '$app/stores';
 	import db, { type Product } from '$lib/dbAPI';
 	import { curr_formatter } from '$lib/utils';
@@ -17,16 +19,18 @@
 		].sort((a, b) => b[1][1] - a[1][1]);
 	};
 
-	let stats: [number, [Product, number]][] = [];
-	$: getStats($page.params.date).then((res) => (stats = res));
+	let stats: [number, [Product, number]][] = $state([]);
+	run(() => {
+		getStats($page.params.date).then((res) => (stats = res));
+	});
 
-	$: totalMoney = curr_formatter.format(
-		stats.reduce((curr, stat) => curr + stat[1][0].price * stat[1][1], 0)
+	let totalMoney = $derived(
+		curr_formatter.format(stats.reduce((curr, stat) => curr + stat[1][0].price * stat[1][1], 0))
 	);
-	$: totalOrders = stats.reduce((curr, stat) => curr + stat[1][1], 0);
+	let totalOrders = $derived(stats.reduce((curr, stat) => curr + stat[1][1], 0));
 </script>
 
-<div class="w-full overflow-x-auto pt-16">
+<div class="pt-16 w-full overflow-x-auto">
 	<table class="table w-full">
 		<!-- head -->
 		<thead>
@@ -43,7 +47,7 @@
 				{@const count = stat[1][1]}
 				<tr class="hover">
 					<td>
-						<div class="flex items-center space-x-3">
+						<div class="space-x-3 flex items-center">
 							<div class="avatar">
 								<div class="mask mask-squircle h-16 w-16">
 									<img src={db.products.getImage(product)} alt={product.name} />

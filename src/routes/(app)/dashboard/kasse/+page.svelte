@@ -7,7 +7,7 @@
 	<title>Kasse</title>
 </svelte:head>
 
-<div class="flex flex-row flex-wrap justify-center gap-4 pt-8">
+<div class="gap-4 pt-8 flex flex-row flex-wrap justify-center">
 	{#each $activeProducts as product (product.id)}
 		<Item {product} />
 	{/each}

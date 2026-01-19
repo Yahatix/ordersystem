@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	import { finishedOrders, total } from '$lib/dbAPI';
 
@@ -8,9 +8,13 @@
 	import FinishedOrderMenuContent from './FinishedOrderMenuContent.svelte';
 	import OrderMenuContent from './OrderMenuContent.svelte';
 
-	let isOrderMenuOpen = false;
-	let isFinishedOrdersMenuOpen = false;
-	export let isDrawerOpen = false;
+	let isOrderMenuOpen = $state(false);
+	let isFinishedOrdersMenuOpen = $state(false);
+	interface Props {
+		isDrawerOpen?: boolean;
+	}
+
+	let { isDrawerOpen = $bindable(false) }: Props = $props();
 
 	beforeNavigate(() => {
 		isOrderMenuOpen = false;
@@ -35,18 +39,18 @@
 	};
 </script>
 
-{#if $page.routeId === '(app)/dashboard/kasse'}
-	<div class:blur-md={isDrawerOpen} class="flex gap-2 flex-wrap">
-		<button class="btn" on:click={openOrderMenu}
+{#if page.route.id === '/(app)/dashboard/kasse'}
+	<div class:blur-md={isDrawerOpen} class="gap-2 flex flex-wrap">
+		<button class="btn" onclick={openOrderMenu}
 			>Bestellung<span class="badge badge-success ml-1">{$total}</span></button
 		>
-		<button class="btn mr-20" on:click={openFinishedOrderMenu}
+		<button class="btn mr-20" onclick={openFinishedOrderMenu}
 			>Fertig:<span class="badge badge-success ml-1">{$finishedOrders.length}</span></button
 		>
 	</div>
-	<Drawer bind:open={isDrawerOpen} on:closed={handleDrawerClose}>
+	<Drawer bind:open={isDrawerOpen} close={handleDrawerClose}>
 		{#if isOrderMenuOpen}
-			<OrderMenuContent on:close={handleDrawerClose} />
+			<OrderMenuContent close={handleDrawerClose} />
 		{/if}
 		{#if isFinishedOrdersMenuOpen}
 			<FinishedOrderMenuContent />

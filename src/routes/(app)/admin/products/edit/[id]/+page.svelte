@@ -1,31 +1,27 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import db, { products, type Product } from '$lib/dbAPI';
+	import { page } from '$app/state';
+	import db, { products } from '$lib/dbAPI';
 	import { fly } from 'svelte/transition';
 
-	const productId = $page.params.id;
-	$: product = $products.find((p) => p.id === +productId) as Product;
-
-	let public_image_path: string;
-	$: {
-		if (product) {
-			public_image_path = db.products.getImage(product) || '';
-		}
-	}
+	const productId = page.params.id;
+	let product = productId ? $products.find((p) => p.id === +productId) : undefined;
 
 	const updateProduct = async () => {
+		if (!product) return;
 		db.products.update(product).then(() => (document.location.pathname = '/admin/products'));
 	};
 </script>
 
 {#if product}
-	<div class="flex h-full w-full flex-row items-center justify-center gap-4">
+	<div class="gap-4 flex h-full w-full flex-row items-center justify-center">
 		<div class="card w-96 bg-base-100 shadow-xl">
-			<figure><img src={public_image_path} alt={product.name} width="384" height="384" /></figure>
+			<figure>
+				<img src={db.products.getImage(product)} alt={product.name} width="384" height="384" />
+			</figure>
 			<div class="card-body">
-				<div class="form-control flex flex-col gap-2">
+				<div class="form-control gap-2 flex flex-col">
 					{#if product.name !== ''}
-						<label class="label" for="name" transition:fly={{ y: 50 }}>
+						<label class="label" for="name" transition:fly|global={{ y: 50 }}>
 							<span class="label-text">Produktname</span>
 						</label>
 					{/if}
@@ -38,7 +34,7 @@
 					/>
 
 					{#if product.price !== null}
-						<label class="label" for="price" transition:fly={{ y: 50 }}>
+						<label class="label" for="price" transition:fly|global={{ y: 50 }}>
 							<span class="label-text">Preis</span>
 						</label>
 					{/if}
@@ -62,7 +58,7 @@
 						/>
 					</div>
 				</div>
-				<button class="btn btn-success" on:click={updateProduct}>Speichern</button>
+				<button class="btn btn-success" onclick={updateProduct}>Speichern</button>
 			</div>
 		</div>
 	</div>
