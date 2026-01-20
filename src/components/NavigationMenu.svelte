@@ -65,7 +65,7 @@
 			</div>
 			<li>
 				<form action="/logout" method="post" use:enhance={logout}>
-					<button class="flex flex-row items-center gap-3" type="submit">
+					<button class="flex gap-3" type="submit">
 						<div class="flex h-10 w-10 items-center fill-current">
 							<span class="material-symbols--logout"></span>
 						</div>

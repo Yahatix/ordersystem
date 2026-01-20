@@ -21,7 +21,7 @@
 		class="absolute top-0 left-0 z-20 grid h-screen w-screen"
 		class:grid-cols-[minmax(160px,320px)_minmax(100px,1fr)]={position === 'left'}
 		class:grid-cols-[minmax(100px,1fr)_minmax(160px,320px)]={position === 'right'}
-		transition:fade|global={{ duration: 300 }}
+		transition:fade={{ duration: 300 }}
 	>
 		{#if position === 'right'}
 			<!-- svelte-ignore a11y_consider_explicit_label -->

@@ -53,7 +53,7 @@
 			<OrderMenuContent close={handleDrawerClose} />
 		{/if}
 		{#if isFinishedOrdersMenuOpen}
-			<FinishedOrderMenuContent />
+			<FinishedOrderMenuContent bind:isFinishedOrdersMenuOpen />
 		{/if}
 	</Drawer>
 {/if}

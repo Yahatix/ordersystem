@@ -2,14 +2,14 @@
 	import db, { finishedOrders, type Order } from '$lib/dbAPI';
 
 	interface Props {
-		isFinishedOrderMenuOpen?: boolean;
+		isFinishedOrdersMenuOpen?: boolean;
 	}
 
-	let { isFinishedOrderMenuOpen = $bindable(false) }: Props = $props();
+	let { isFinishedOrdersMenuOpen = $bindable(false) }: Props = $props();
 
 	const sendOrderToKitchen = (order: Order) => {
 		db.orders.deliverOrder(order);
-		isFinishedOrderMenuOpen = false;
+		isFinishedOrdersMenuOpen = false;
 	};
 </script>
 
