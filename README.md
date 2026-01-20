@@ -1,4 +1,4 @@
-# Ichglaubs Bestellsystem
+# Bestellsystem
 
 Ein modernes Bestellsystem basierend auf SvelteKit, TypeScript und Supabase.
 
@@ -10,10 +10,44 @@ Das Ichglaubs Bestellsystem ist eine vollständige Webanwendung zur Verwaltung v
 
 - **Benutzerauthentifizierung** - Login und Registrierung mit Supabase Auth
 - **Dashboard** - Übersichtliche Darstellung von Bestellungen
+- **Küche-Ansicht** - Schnelle Bestellverwaltung für die Küche
+- **Kasse-Interface** - Intuitive Bedienung an der Kasse
 - **Admin-Bereich** - Verwaltungsfunktionen für Administratoren
 - **Responsive Design** - Mit TailwindCSS und DaisyUI
 - **TypeScript** - Typsichere Entwicklung
 - **Realtime Updates** - Dank Supabase
+
+## 📸 Screenshots
+
+### Startseite
+![Ichglaubs Startseite](.docs/Images/home_screen.png)
+
+### Küche
+Die Küchen-Ansicht zeigt alle Bestellungen in Echtzeit mit einfachen Bedienungselementen.
+
+#### Küche - Bestellübersicht
+![Küche - Bestellübersicht](.docs/Images/kitchen_detail_1.png)
+#### Küche - Bestellübersicht - keine Bestellungen
+![Küche - Bestellübersicht - keine Bestellungen](.docs/Images/kitchen_overview.png)
+#### Kundendisplay
+![Kundendisplay](.docs/Images/kitchen_detail_2.png)
+#### Admin - Produkte
+![Admin - Produkte](.docs/Images/kitchen_detail_3.png)
+#### Admin - Produkt bearbeiten
+![Admin - Produkt bearbeiten](.docs/Images/kitchen_detail_4.png)
+#### Admin - Neues Produkt
+![Admin - Neues Produkt](.docs/Images/kitchen_detail_5.png)
+#### Statistiken
+![Statistiken](.docs/Images/kitchen_detail_6.png)
+#### Navigationsmenü
+![Navigationsmenü](.docs/Images/kitchen_detail_7.png)
+
+### Kasse
+Das Kassen-Interface bietet eine übersichtliche Verwaltung von Bestellungen und Zahlungen.
+
+![Kasse - Übersicht](.docs/Images/cash_register_overview.png)
+![Kasse - Bestellübersicht](.docs/Images/cash_register_detail.png)
+![Kasse - Abholbare Bestellungen](.docs/Images/cash_register_detail_2.png)
 
 ## 🛠️ Tech Stack
 
@@ -24,6 +58,8 @@ Das Ichglaubs Bestellsystem ist eine vollständige Webanwendung zur Verwaltung v
   - [TailwindCSS](https://tailwindcss.com/)
   - [DaisyUI](https://daisyui.com/)
 - **Deployment:** Vercel (Adapter konfiguriert)
+- **Notifications:** [Svelte Sonner](https://github.com/wobsoriano/svelte-sonner)
+- **Carousel:** Embla Carousel (mit Autoplay)
 
 ## 📦 Installation
 
@@ -50,19 +86,23 @@ Das Ichglaubs Bestellsystem ist eine vollständige Webanwendung zur Verwaltung v
 
 3. **Umgebungsvariablen einrichten:**
 
-   Erstelle eine `.env` Datei im Root-Verzeichnis:
+   Kopiere `.env.example` zu `.env.local`:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Aktualisiere die Variablen in `.env.local`:
 
    ```env
    PUBLIC_SUPABASE_URL=deine-supabase-url
-   PUBLIC_SUPABASE_KEY=dein-supabase-anon-key
-   PUBLIC_SUPABASE_ORDER_TABLE=deine-bestell-tabelle
-   PUBLIC_SUPABASE_PRODUCT_TABLE=deine-produkt-tabelle
+   PUBLIC_SUPABASE_PUBLISHABLE_KEY=dein-supabase-publishable-key
    ```
 
 4. **Supabase Projekt einrichten:**
    - Erstelle ein neues Projekt in [Supabase](https://app.supabase.com/)
-   - Konfiguriere die benötigten Tabellen in deiner Datenbank
-   - Kopiere die URL und den Anon-Key in deine `.env` Datei
+   - Konfiguriere die benötigten Tabellen und Authentifizierung
+   - Kopiere die Projekt-URL und den Publishable Key in deine `.env` Datei
 
 ## 🏃‍♂️ Entwicklung
 
@@ -138,38 +178,16 @@ Formatierung überprüfen:
 prettier --check --plugin-search-dir=. .
 ```
 
-## 📁 Projektstruktur
-
-```
-ichglaubs-ordersystem/
-├── src/
-│   ├── components/          # Wiederverwendbare Svelte-Komponenten
-│   │   ├── Drawer.svelte
-│   │   ├── LeftMenu.svelte
-│   │   ├── NavigationMenu.svelte
-│   │   ├── OrderMenuContent.svelte
-│   │   └── ...
-│   ├── lib/                 # Shared Libraries
-│   │   ├── db.ts           # Supabase Client Setup
-│   │   ├── dbAPI.ts        # Datenbank API Funktionen
-│   │   ├── stores.ts       # Svelte Stores
-│   │   └── utils.ts        # Hilfsfunktionen
-│   ├── routes/             # SvelteKit Routes
-│   │   └── (app)/          # App Layout Group
-│   │       ├── admin/      # Admin-Bereich
-│   │       ├── dashboard/  # Dashboard
-│   │       ├── logout/     # Logout-Route
-│   │       └── signup/     # Registrierung
-│   ├── app.css             # Globale Styles
-│   ├── app.html            # HTML Template
-│   └── hooks.server.ts     # Server Hooks (Auth)
-├── static/                 # Statische Assets
-└── package.json
-```
-
 ## 🔐 Authentifizierung
 
-Das Projekt nutzt Supabase Auth mit den `@supabase/auth-helpers-sveltekit`. Die Authentifizierung wird über Server-Hooks (`hooks.server.ts`) verwaltet.
+Das Projekt nutzt **Supabase SSR** mit `@supabase/ssr` für sichere serverseitige Authentifizierung. Die Authentifizierung wird über Server-Hooks (`hooks.server.ts`) verwaltet.
+
+### Authentifizierungs-Flow
+
+- Server-seitige Verwaltung von Sessions via Cookies
+- JWT-Validierung durch `safeGetSession()`
+- Automatische Sitzungsverwaltung in `event.locals`
+- Secure Cookie-Handling mit Path-Einstellungen
 
 ## 🎨 Styling
 
@@ -177,12 +195,6 @@ Das Projekt verwendet:
 
 - **TailwindCSS** für Utility-First CSS
 - **DaisyUI** für vorgefertigte UI-Komponenten
-- **Autoprefixer** für Browser-Kompatibilität
-
-Konfigurationsdateien:
-
-- `tailwind.config.cjs`
-- `postcss.config.cjs`
 
 ## 📝 Lizenz
 
@@ -191,4 +203,3 @@ Alle Rechte vorbehalten.
 ## 👨‍💻 Entwicklung
 
 Entwickelt mit ❤️ unter Verwendung von SvelteKit und Supabase.
-.
