@@ -1,21 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { crossfade } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { flip } from 'svelte/animate';
-
-	import { Carousel, type CarouselControls } from 'renderless-svelte';
+	import emblaCarouselSvelte from 'embla-carousel-svelte';
+	import Autoplay from 'embla-carousel-autoplay';
 
 	import { finishedOrders, unfinishedOrders } from '$lib/dbAPI';
-
-	let controls: CarouselControls = $state();
-
-	onMount(() => {
-		const id = setInterval(() => {
-			controls.next();
-		}, 10000);
-		return () => clearInterval(id);
-	});
 
 	const [send, receive] = crossfade({
 		fallback(node) {
@@ -33,22 +23,31 @@
 		}
 	});
 
+	const options = {
+		options: { loop: true },
+		plugins: [Autoplay({ playOnInit: true })]
+	};
+
 	const images = [
-		'/images/slider/Flyer Teenkreis_Endformat.jpg',
-		'/images/slider/Flyer Teenkreis_Endformat2.jpg',
-		'/images/slider/Werbung Jugendbistro_2022.jpg',
-		'/images/slider/whatsapp.png'
+		'https://placehold.co/400x800/orange/white?text=Werbung+1',
+		'https://placehold.co/600x400?text=Werbung+2',
+		'https://placehold.co/600x400?text=Werbung+3',
+		'https://placehold.co/600x400?text=Werbung+4'
 	];
 </script>
 
 <div class="grid h-full w-full grid-cols-2 gap-2">
 	<div class="flex h-full w-full items-center justify-center">
 		<!-- Werbeblock -->
-		<Carousel items={images} loop bind:controls>
-			{#snippet children({ payload })}
-				<img src={payload} alt="" class="max-h-[calc(100vh-32px)]" />
-			{/snippet}
-		</Carousel>
+		<div class="embla overflow-hidden" use:emblaCarouselSvelte={options}>
+			<div class="embla__container flex items-center">
+				{#each images as image}
+					<div class="embla__slide flex min-w-0 flex-[0_0_100%] justify-center">
+						<img class="max-h-[calc(100vh-32px)]" src={image} alt="" />
+					</div>
+				{/each}
+			</div>
+		</div>
 	</div>
 	<div class="grid grid-cols-2 justify-center gap-2">
 		<div class="flex flex-col items-center gap-2">
@@ -58,7 +57,7 @@
 					in:receive|global={{ key: order.id }}
 					out:send|global={{ key: order.id }}
 					animate:flip
-					class="w-fit max-w-xs min-w-[10rem] rounded-lg bg-amber-500 p-2 text-center text-3xl font-bold"
+					class="w-fit max-w-xs min-w-40 rounded-lg bg-amber-500 p-2 text-center text-3xl font-bold"
 				>
 					{order.id}
 				</div>
@@ -71,7 +70,7 @@
 					in:receive|global={{ key: order.id }}
 					out:send|global={{ key: order.id }}
 					animate:flip
-					class="w-fit max-w-xs min-w-[10rem] rounded-lg bg-green-500 p-2 text-center text-3xl font-bold"
+					class="w-fit max-w-xs min-w-40 rounded-lg bg-green-500 p-2 text-center text-3xl font-bold"
 				>
 					{order.id}
 				</div>

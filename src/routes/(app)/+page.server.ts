@@ -19,6 +19,9 @@ export const actions: Actions = {
 
 		if (!email) {
 			return fail(400, {
+				values: {
+					email: null, password: null,
+				},
 				error: 'Please enter your email'
 			});
 		}
@@ -26,7 +29,7 @@ export const actions: Actions = {
 			return fail(400, {
 				error: 'Please enter your password',
 				values: {
-					email
+					email: null, password: null,
 				}
 			});
 		}
@@ -41,14 +44,15 @@ export const actions: Actions = {
 				return fail(400, {
 					error: 'Invalid credentials',
 					values: {
-						email
+						email, password,
 					}
 				});
 			}
 			return fail(500, {
 				error: 'Server error. Try again later.',
 				values: {
-					email
+					email,
+					password,
 				}
 			});
 		}

@@ -4,9 +4,9 @@
 
 	import { finishedOrders, total } from '$lib/dbAPI';
 
-	import Drawer from './Drawer.svelte';
-	import FinishedOrderMenuContent from './FinishedOrderMenuContent.svelte';
-	import OrderMenuContent from './OrderMenuContent.svelte';
+	import Drawer from '$components/Drawer.svelte';
+	import FinishedOrderMenuContent from '$components/FinishedOrderMenuContent.svelte';
+	import OrderMenuContent from '$components/OrderMenuContent.svelte';
 
 	let isOrderMenuOpen = $state(false);
 	let isFinishedOrdersMenuOpen = $state(false);

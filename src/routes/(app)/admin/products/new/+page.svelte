@@ -10,21 +10,23 @@
 		price: 0,
 		image_path: ''
 	});
-	let fileEl: HTMLInputElement = $state();
+	let fileList = $state<FileList>();
 
 	let validProduct = $derived(product.name !== '' && product.price !== null);
 
 	const createProduct = () => {
-		if (!fileEl.files) return;
-		product.image_path = fileEl.files[0].name;
+		const file = fileList?.item(0);
+		if (!file) return;
+		product.image_path = file.name;
 		db.products.new(product);
 		uploadImage();
 		goto('/admin/products');
 	};
 
 	const uploadImage = () => {
-		if (!fileEl.files) return;
-		db.products.uploadImage(fileEl.files[0]).then((res) => {
+		const file = fileList?.item(0);
+		if (!file) return;
+		db.products.uploadImage(file).then((res) => {
 			if (res.error) {
 				toast.error(res.error.message);
 				return;
@@ -73,7 +75,7 @@
 			<input class="toggle" type="checkbox" id="active" bind:checked={product.active} />
 		</div>
 		<label class="btn" for="image">Bild auswählen</label>
-		<input class="hidden" bind:this={fileEl} type="file" id="image" accept="image/*" />
+		<input class="hidden" bind:files={fileList} type="file" id="image" accept="image/*" />
 		<button class="btn" class:btn-disabled={!validProduct} onclick={createProduct}
 			>Neues Produkt anlegen</button
 		>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import db, { type Product } from '$lib/dbAPI';
 	import { curr_formatter } from '$lib/utils';
 
@@ -20,8 +20,8 @@
 	};
 
 	let stats: [number, [Product, number]][] = $state([]);
-	run(() => {
-		getStats($page.params.date).then((res) => (stats = res));
+	$effect.pre(() => {
+		page.params.date && getStats(page.params.date).then((res) => (stats = res));
 	});
 
 	let totalMoney = $derived(

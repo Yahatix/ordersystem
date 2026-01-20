@@ -3,7 +3,7 @@
 
 	import { currentOrder } from '$lib/stores';
 	import db, { total } from '$lib/dbAPI';
-	import OrderSuccessToast from './OrderSuccessToast.svelte';
+	import OrderSuccessToast from '$components/OrderSuccessToast.svelte';
 
 	const { close } = $props();
 

@@ -135,12 +135,12 @@ db.orders.getAll().then((res) => orders.set(res));
 
 supabase.realtime
 	.channel('orders')
-	.on('postgres_changes', { event: 'INSERT', table: 'orders', schema: 'public' }, (payload) => {
+	.on<Order>('postgres_changes', { event: 'INSERT', table: 'orders', schema: 'public' }, (payload) => {
 		db.orders.get(payload.new.id).then((order) => {
 			orders.update((val) => (order ? [...val, order] : val));
 		});
 	})
-	.on('postgres_changes', { event: 'UPDATE', table: 'orders', schema: 'public' }, (payload) => {
+	.on<Order>('postgres_changes', { event: 'UPDATE', table: 'orders', schema: 'public' }, (payload) => {
 		orders.update((val) => (val = val.map((p) => (p.id !== payload.new.id ? p : payload.new))));
 	})
 	.subscribe();
@@ -176,8 +176,11 @@ db.products.getAll().then((res) => products.set(res));
 
 supabase.realtime
 	.channel('products')
-	.on('postgres_changes', { event: '*', table: 'products', schema: 'public' }, (payload) => {
-		products.update((val) => (val = val.map((p) => (p.id !== payload.new.id ? p : payload.new))));
+	.on<Product>('postgres_changes', { event: '*', table: 'products', schema: 'public' }, (payload) => {
+		products.update((val) => {
+			val = val.map((p) => (p.id !== (payload.new as Product).id ? p : payload.new as Product));
+			return val;
+		});
 	})
 	.subscribe();
 
